@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Meu Perfil</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--primary-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            max-width: var(--max-width-4xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .profile-container {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xxl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xxl);
+            padding-bottom: var(--spacing-xl);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            box-shadow: var(--shadow);
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .profile-avatar-large:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 35px;
+            height: 35px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .avatar-edit:hover {
+            background: var(--info-color);
+            transform: scale(1.1);
+        }
+
+        .profile-info h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .profile-info p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: rgba(108, 117, 125, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+        }
+
+        .form-control {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            transition: all var(--transition-normal);
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 2px solid var(--border-color);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            padding: var(--spacing-lg) var(--spacing-xxl);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: var(--spacing-lg) var(--spacing-xxl);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .profile-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+                <div class="logo">EDUSTREAM</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Meu Perfil</h1>
+        
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar-large" onclick="changeAvatar()">
+                    U
+                    <div class="avatar-edit">📷</div>
+                </div>
+                
+                <div class="profile-info">
+                    <h2 id="userName">Usuário EduStream</h2>
+                    <p>📧 usuario@email.com</p>
+                    <p>📅 Membro desde Janeiro 2024</p>
+                    <p>🎯 Estudante Ativo</p>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">5</span>
+                            <span class="stat-label">Cursos Concluídos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">Cursos em Andamento</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">3</span>
+                            <span class="stat-label">Certificados</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">85%</span>
+                            <span class="stat-label">Taxa de Conclusão</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form class="profile-form" id="profileForm">
+                <div class="form-group">
+                    <label class="form-label" for="firstName">Nome</label>
+                    <input type="text" class="form-control" id="firstName" value="Usuário" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="lastName">Sobrenome</label>
+                    <input type="text" class="form-control" id="lastName" value="EduStream" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" class="form-control" id="email" value="usuario@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="phone">Telefone</label>
+                    <input type="tel" class="form-control" id="phone" value="(11) 99999-9999">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="birthDate">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="birthDate" value="1990-01-01">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="profession">Profissão</label>
+                    <input type="text" class="form-control" id="profession" value="Desenvolvedor">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="form-label" for="bio">Biografia</label>
+                    <textarea class="form-control" id="bio" rows="4" placeholder="Conte um pouco sobre você...">Apaixonado por tecnologia e sempre em busca de novos conhecimentos.</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="linkedin">LinkedIn</label>
+                    <input type="url" class="form-control" id="linkedin" placeholder="https://linkedin.com/in/seu-perfil">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="github">GitHub</label>
+                    <input type="url" class="form-control" id="github" placeholder="https://github.com/seu-usuario">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="resetForm()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Change avatar function
+        function changeAvatar() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const avatar = document.querySelector('.profile-avatar-large');
+                        avatar.style.backgroundImage = `url(${e.target.result})`;
+                        avatar.style.backgroundSize = 'cover';
+                        avatar.style.backgroundPosition = 'center';
+                        avatar.textContent = '';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            // Update user name in header
+            document.getElementById('userName').textContent = `${firstName} ${lastName}`;
+            
+            // Simulate save
+            const submitBtn = this.querySelector('.btn-primary');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Salvando...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert('Perfil atualizado com sucesso!');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        });
+
+        // Reset form
+        function resetForm() {
+            if (confirm('Tem certeza que deseja cancelar as alterações?')) {
+                document.getElementById('profileForm').reset();
+                // Reset to original values
+                document.getElementById('firstName').value = 'Usuário';
+                document.getElementById('lastName').value = 'EduStream';
+                document.getElementById('email').value = 'usuario@email.com';
+                document.getElementById('phone').value = '(11) 99999-9999';
+                document.getElementById('birthDate').value = '1990-01-01';
+                document.getElementById('profession').value = 'Desenvolvedor';
+                document.getElementById('bio').value = 'Apaixonado por tecnologia e sempre em busca de novos conhecimentos.';
+            }
+        }
+
+        // Auto-resize textarea
+        document.getElementById('bio').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+</body>
+</html>
+

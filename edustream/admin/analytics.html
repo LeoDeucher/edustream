@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Analytics</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary-color) 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            color: var(--text-light);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-light);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-2px);
+        }
+
+        .admin-logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-light);
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            margin-left: var(--spacing-sm);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow);
+        }
+
+        .main-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xxl);
+        }
+
+        .chart-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .chart-card:hover::before {
+            opacity: 1;
+        }
+
+        .chart-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .chart-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-sm);
+            background: rgba(108, 117, 125, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main-chart {
+            grid-column: 1 / -1;
+        }
+
+        .main-chart .chart-container {
+            height: 400px;
+        }
+
+        .period-selector {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .period-btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .period-btn.active,
+        .period-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        .insights-section {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            margin-top: var(--spacing-xl);
+        }
+
+        .insights-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .insight-card {
+            padding: var(--spacing-lg);
+            border-left: 4px solid var(--accent-color);
+            background: rgba(40, 167, 69, 0.05);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .insight-card.warning {
+            border-left-color: var(--warning-color);
+            background: rgba(255, 193, 7, 0.05);
+        }
+
+        .insight-card.info {
+            border-left-color: var(--info-color);
+            background: rgba(23, 162, 184, 0.05);
+        }
+
+        .insight-icon {
+            font-size: var(--font-size-2xl);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .insight-text {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .period-selector {
+                flex-wrap: wrap;
+            }
+            
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+            
+            .chart-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animações */
+        .chart-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .chart-card:nth-child(1) { animation-delay: 0.1s; }
+        .chart-card:nth-child(2) { animation-delay: 0.2s; }
+        .chart-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+                <div>
+                    <span class="admin-logo">EDUSTREAM</span>
+                    <span class="admin-badge">ADMIN</span>
+                </div>
+            </div>
+            
+            <div class="user-avatar">A</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Analytics & Relatórios</h1>
+        
+        <div class="period-selector">
+            <button class="period-btn" onclick="changePeriod('7d')">7 dias</button>
+            <button class="period-btn active" onclick="changePeriod('30d')">30 dias</button>
+            <button class="period-btn" onclick="changePeriod('90d')">90 dias</button>
+            <button class="period-btn" onclick="changePeriod('1y')">1 ano</button>
+        </div>
+
+        <div class="analytics-grid">
+            <!-- Gráfico Principal - Média de Usuários Mensal -->
+            <div class="chart-card main-chart">
+                <h2 class="chart-title">Média de Usuários Mensal</h2>
+                <div class="chart-container">
+                    <canvas id="usersChart"></canvas>
+                </div>
+                <div class="chart-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">1,234</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">+12%</span>
+                        <span class="stat-label">Crescimento</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">156</span>
+                        <span class="stat-label">Novos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Cursos -->
+            <div class="chart-card">
+                <h2 class="chart-title">Cursos por Categoria</h2>
+                <div class="chart-container">
+                    <canvas id="coursesChart"></canvas>
+                </div>
+                <div class="chart-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">56</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">8</span>
+                        <span class="stat-label">Novos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">6</span>
+                        <span class="stat-label">Categorias</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Receita -->
+            <div class="chart-card">
+                <h2 class="chart-title">Receita Mensal</h2>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="chart-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">R$ 45.6k</span>
+                        <span class="stat-label">Este mês</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">+18%</span>
+                        <span class="stat-label">Crescimento</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">R$ 156</span>
+                        <span class="stat-label">Ticket médio</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="insights-section">
+            <h2 class="insights-title">Insights e Recomendações</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-text">
+                        <strong>Crescimento Positivo:</strong> O número de usuários ativos cresceu 12% no último mês, indicando boa aceitação da plataforma.
+                    </div>
+                </div>
+                
+                <div class="insight-card warning">
+                    <div class="insight-icon">⚠️</div>
+                    <div class="insight-text">
+                        <strong>Atenção:</strong> A categoria "Design" tem baixa procura. Considere revisar o conteúdo ou estratégia de marketing.
+                    </div>
+                </div>
+                
+                <div class="insight-card info">
+                    <div class="insight-icon">💡</div>
+                    <div class="insight-text">
+                        <strong>Oportunidade:</strong> Cursos de "Programação" têm alta demanda. Considere expandir esta categoria.
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-text">
+                        <strong>Meta Atingida:</strong> A receita mensal superou a meta em 18%, excelente performance!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuração dos gráficos
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        };
+
+        // Gráfico de Usuários Mensal
+        const usersCtx = document.getElementById('usersChart').getContext('2d');
+        new Chart(usersCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                datasets: [{
+                    label: 'Usuários Ativos',
+                    data: [850, 920, 1100, 980, 1200, 1150, 1300, 1234, 1180, 1250, 1320, 1400],
+                    backgroundColor: [
+                        '#dc3545', '#dc3545', '#ffc107', '#ffc107', '#28a745', '#28a745',
+                        '#28a745', '#28a745', '#28a745', '#28a745', '#28a745', '#28a745'
+                    ],
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Cursos por Categoria
+        const coursesCtx = document.getElementById('coursesChart').getContext('2d');
+        new Chart(coursesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Programação', 'Design', 'Marketing', 'Negócios', 'Idiomas', 'Tecnologia'],
+                datasets: [{
+                    data: [25, 8, 12, 6, 3, 2],
+                    backgroundColor: [
+                        '#6c757d',
+                        '#28a745',
+                        '#17a2b8',
+                        '#ffc107',
+                        '#fd7e14',
+                        '#6f42c1'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                ...chartOptions,
+                cutout: '60%'
+            }
+        });
+
+        // Gráfico de Receita
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                datasets: [{
+                    label: 'Receita (R$)',
+                    data: [28500, 32100, 35600, 31200, 38900, 42300, 39800, 45600, 41200, 47800, 52100, 48900],
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#28a745',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + (value / 1000) + 'k';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Função para mudar período
+        function changePeriod(period) {
+            // Remove active de todos os botões
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Adiciona active ao botão clicado
+            event.target.classList.add('active');
+            
+            // Aqui você implementaria a lógica para atualizar os gráficos
+            console.log('Período selecionado:', period);
+        }
+    </script>
+</body>
+</html>
+

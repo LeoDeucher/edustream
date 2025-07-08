@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Gerenciar Curso</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary-color) 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            color: var(--text-light);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-light);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-2px);
+        }
+
+        .admin-logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-light);
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            margin-left: var(--spacing-sm);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow);
+        }
+
+        .main-content {
+            max-width: var(--max-width-4xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .course-form {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xxl);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .form-section {
+            margin-bottom: var(--spacing-xxl);
+        }
+
+        .section-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: var(--spacing-xxl);
+            align-items: start;
+        }
+
+        .image-upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .upload-container {
+            width: 100%;
+            max-width: 300px;
+            aspect-ratio: 16/9;
+            border: 3px dashed var(--border-color);
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-container:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            transform: scale(1.02);
+        }
+
+        .upload-container.has-image {
+            border-style: solid;
+            border-color: var(--accent-color);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .upload-container:hover .upload-icon {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: var(--font-size-sm);
+        }
+
+        .upload-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+        }
+
+        .form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .form-label {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+        }
+
+        .form-control {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            transition: all var(--transition-normal);
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-control.textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .detailed-content {
+            grid-column: 1 / -1;
+        }
+
+        .detailed-content .form-control {
+            min-height: 200px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xxl);
+            padding-top: var(--spacing-xl);
+            border-top: 2px solid var(--border-color);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            padding: var(--spacing-lg) var(--spacing-xxl);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left var(--transition-slow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: var(--spacing-lg) var(--spacing-xxl);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .course-preview {
+            background: rgba(108, 117, 125, 0.05);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .preview-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .preview-content {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-xl);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+            
+            .course-form {
+                padding: var(--spacing-xl);
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animações */
+        .course-form {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+                <div>
+                    <span class="admin-logo">EDUSTREAM</span>
+                    <span class="admin-badge">ADMIN</span>
+                </div>
+            </div>
+            
+            <div class="user-avatar">A</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Gerenciar Curso</h1>
+        
+        <form class="course-form" id="courseForm">
+            <div class="form-section">
+                <h2 class="section-title">Informações Básicas</h2>
+                
+                <div class="form-grid">
+                    <div class="image-upload-area">
+                        <div class="upload-container" id="uploadContainer">
+                            <input type="file" class="upload-input" id="imageInput" accept="image/*">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">
+                                Clique para adicionar<br>
+                                imagem do curso<br>
+                                <small>(Recomendado: 800x450px)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="course-preview">
+                            <div class="preview-title">Preview do Card</div>
+                            <div class="preview-content">
+                                A imagem aparecerá aqui como será exibida no card do curso para os alunos.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-fields">
+                        <div class="form-group">
+                            <label class="form-label" for="courseTitle">Título do Curso</label>
+                            <input type="text" class="form-control" id="courseTitle" placeholder="Inserir título do curso" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="category">Categoria</label>
+                                <select class="form-control" id="category" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="programacao">Programação</option>
+                                    <option value="design">Design</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="negocios">Negócios</option>
+                                    <option value="idiomas">Idiomas</option>
+                                    <option value="tecnologia">Tecnologia</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="difficulty">Dificuldade</label>
+                                <select class="form-control" id="difficulty" required>
+                                    <option value="">Selecione a dificuldade</option>
+                                    <option value="iniciante">Iniciante</option>
+                                    <option value="intermediario">Intermediário</option>
+                                    <option value="avancado">Avançado</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="summary">Resumo do Curso</label>
+                            <textarea class="form-control textarea" id="summary" placeholder="Inserir resumo sobre o curso" required></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="price">Valor (R$)</label>
+                                <input type="number" class="form-control" id="price" placeholder="0,00" step="0.01" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="author">Autor</label>
+                                <input type="text" class="form-control" id="author" placeholder="Nome do instrutor" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h2 class="section-title">Informações Detalhadas</h2>
+                
+                <div class="form-group detailed-content">
+                    <label class="form-label" for="detailedInfo">Descrição Completa do Curso</label>
+                    <textarea class="form-control" id="detailedInfo" placeholder="Descreva detalhadamente o conteúdo do curso, objetivos de aprendizagem, pré-requisitos e o que o aluno irá aprender..."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="duration">Duração Total (horas)</label>
+                        <input type="number" class="form-control" id="duration" placeholder="0" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="modules">Número de Módulos</label>
+                        <input type="number" class="form-control" id="modules" placeholder="0" min="1">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="lessons">Número de Aulas</label>
+                        <input type="number" class="form-control" id="lessons" placeholder="0" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="certificate">Certificado</label>
+                        <select class="form-control" id="certificate">
+                            <option value="sim">Sim, emite certificado</option>
+                            <option value="nao">Não emite certificado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="resetForm()">Limpar Formulário</button>
+                <button type="submit" class="btn-primary">Publicar Curso</button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // Upload de imagem
+        const imageInput = document.getElementById('imageInput');
+        const uploadContainer = document.getElementById('uploadContainer');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" class="preview-image">
+                        <input type="file" class="upload-input" id="imageInput" accept="image/*">
+                    `;
+                    uploadContainer.classList.add('has-image');
+                    
+                    // Re-adicionar event listener
+                    const newInput = uploadContainer.querySelector('.upload-input');
+                    newInput.addEventListener('change', arguments.callee);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Formatação do campo de preço
+        const priceInput = document.getElementById('price');
+        priceInput.addEventListener('input', function() {
+            let value = this.value.replace(/[^\d.,]/g, '');
+            this.value = value;
+        });
+
+        // Submissão do formulário
+        document.getElementById('courseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validação básica
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = 'var(--danger-color)';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = 'var(--border-color)';
+                }
+            });
+            
+            if (isValid) {
+                // Simular salvamento
+                const submitBtn = this.querySelector('.btn-primary');
+                const originalText = submitBtn.textContent;
+                
+                submitBtn.textContent = 'Publicando...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    alert('Curso publicado com sucesso!');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    // resetForm();
+                }, 2000);
+            } else {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+            }
+        });
+
+        // Função para limpar formulário
+        function resetForm() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                document.getElementById('courseForm').reset();
+                
+                // Resetar upload de imagem
+                uploadContainer.innerHTML = `
+                    <input type="file" class="upload-input" id="imageInput" accept="image/*">
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-text">
+                        Clique para adicionar<br>
+                        imagem do curso<br>
+                        <small>(Recomendado: 800x450px)</small>
+                    </div>
+                `;
+                uploadContainer.classList.remove('has-image');
+                
+                // Re-adicionar event listener
+                const newInput = uploadContainer.querySelector('.upload-input');
+                newInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            uploadContainer.innerHTML = `
+                                <img src="${e.target.result}" alt="Preview" class="preview-image">
+                                <input type="file" class="upload-input" id="imageInput" accept="image/*">
+                            `;
+                            uploadContainer.classList.add('has-image');
+                            
+                            const newInput = uploadContainer.querySelector('.upload-input');
+                            newInput.addEventListener('change', arguments.callee);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // Auto-resize textarea
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        });
+    </script>
+</body>
+</html>
+

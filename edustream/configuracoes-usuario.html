@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Configurações</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--primary-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            max-width: var(--max-width-4xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .settings-container {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xxl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .settings-section {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+        }
+
+        .form-control {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            transition: all var(--transition-normal);
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .toggle-label {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            padding: var(--spacing-lg) var(--spacing-xxl);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: block;
+            width: 100%;
+            margin-top: var(--spacing-xl);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+            
+            .settings-container {
+                padding: var(--spacing-xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href=\'dashboard.html\'">←</button>
+                <div class="logo">EDUSTREAM</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Configurações</h1>
+        
+        <div class="settings-container">
+            <form id="settingsForm">
+                <!-- Configurações de Notificação -->
+                <div class="settings-section">
+                    <h2 class="section-title">Notificações</h2>
+                    <div class="toggle-switch">
+                        <label class="toggle-label" for="emailNotifications">Notificações por Email</label>
+                        <label class="switch">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <label class="toggle-label" for="pushNotifications">Notificações Push</label>
+                        <label class="switch">
+                            <input type="checkbox" id="pushNotifications">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Configurações de Privacidade -->
+                <div class="settings-section">
+                    <h2 class="section-title">Privacidade</h2>
+                    <div class="toggle-switch">
+                        <label class="toggle-label" for="profileVisibility">Tornar Perfil Público</label>
+                        <label class="switch">
+                            <input type="checkbox" id="profileVisibility" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <label class="toggle-label" for="dataSharing">Compartilhar Dados de Uso</label>
+                        <label class="switch">
+                            <input type="checkbox" id="dataSharing">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Configurações de Segurança -->
+                <div class="settings-section">
+                    <h2 class="section-title">Segurança</h2>
+                    <div class="form-group">
+                        <label class="form-label" for="currentPassword">Senha Atual</label>
+                        <input type="password" class="form-control" id="currentPassword" placeholder="Digite sua senha atual">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="newPassword">Nova Senha</label>
+                        <input type="password" class="form-control" id="newPassword" placeholder="Digite sua nova senha">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirmar Nova Senha</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirme sua nova senha">
+                    </div>
+                </div>
+
+                <!-- Preferências de Idioma -->
+                <div class="settings-section">
+                    <h2 class="section-title">Preferências</h2>
+                    <div class="form-group">
+                        <label class="form-label" for="language">Idioma</label>
+                        <select class="form-control" id="language">
+                            <option value="pt-BR">Português (Brasil)</option>
+                            <option value="en-US">English (US)</option>
+                            <option value="es-ES">Español (España)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="theme">Tema</label>
+                        <select class="form-control" id="theme">
+                            <option value="light">Claro</option>
+                            <option value="dark">Escuro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">Salvar Configurações</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById("settingsForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const emailNotifications = document.getElementById("emailNotifications").checked;
+            const pushNotifications = document.getElementById("pushNotifications").checked;
+            const profileVisibility = document.getElementById("profileVisibility").checked;
+            const dataSharing = document.getElementById("dataSharing").checked;
+            const currentPassword = document.getElementById("currentPassword").value;
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const language = document.getElementById("language").value;
+            const theme = document.getElementById("theme").value;
+
+            // Simulate saving settings
+            alert("Configurações salvas com sucesso!");
+            console.log({
+                emailNotifications, pushNotifications, profileVisibility, dataSharing,
+                currentPassword, newPassword, confirmPassword, language, theme
+            });
+
+            // Clear password fields after saving
+            document.getElementById("currentPassword").value = "";
+            document.getElementById("newPassword").value = "";
+            document.getElementById("confirmPassword").value = "";
+        });
+    </script>
+</body>
+</html>
+

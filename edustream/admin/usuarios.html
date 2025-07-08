@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Gerenciar Usuários</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary-color) 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            color: var(--text-light);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-light);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-2px);
+        }
+
+        .admin-logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-light);
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            margin-left: var(--spacing-sm);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow);
+        }
+
+        .main-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .users-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: var(--font-size-base);
+            transition: all var(--transition-normal);
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+        }
+
+        .add-user-btn {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .add-user-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .user-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .user-card:hover::before {
+            opacity: 1;
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .user-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-details h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .user-details p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .user-actions {
+            position: relative;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            font-size: var(--font-size-xl);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            transition: all var(--transition-fast);
+        }
+
+        .settings-btn:hover {
+            background-color: var(--bg-secondary);
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        .user-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .meta-item {
+            text-align: center;
+            padding: var(--spacing-sm);
+            background: rgba(108, 117, 125, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .meta-value {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .meta-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .status-active {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--accent-color);
+        }
+
+        .status-inactive {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+
+        .actions-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 180px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-fast);
+            z-index: var(--z-dropdown);
+        }
+
+        .actions-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color var(--transition-fast);
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger-color);
+        }
+
+        .dropdown-item.danger:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .users-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                max-width: none;
+            }
+            
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+        }
+
+        /* Animações */
+        .user-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .user-card:nth-child(1) { animation-delay: 0.1s; }
+        .user-card:nth-child(2) { animation-delay: 0.2s; }
+        .user-card:nth-child(3) { animation-delay: 0.3s; }
+        .user-card:nth-child(4) { animation-delay: 0.4s; }
+        .user-card:nth-child(5) { animation-delay: 0.5s; }
+        .user-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+                <div>
+                    <span class="admin-logo">EDUSTREAM</span>
+                    <span class="admin-badge">ADMIN</span>
+                </div>
+            </div>
+            
+            <div class="user-avatar">A</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Gerenciar Usuários</h1>
+        
+        <div class="users-controls">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Buscar usuários..." id="searchInput">
+            </div>
+            <button class="add-user-btn">
+                <span>+</span>
+                Adicionar Usuário
+            </button>
+        </div>
+
+        <div class="users-grid" id="usersGrid">
+            <!-- Usuário 1 -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-photo">JS</div>
+                        <div class="user-details">
+                            <h3>João Silva</h3>
+                            <p>joao@email.com</p>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="settings-btn" onclick="toggleDropdown(this)">⚙️</button>
+                        <div class="actions-dropdown">
+                            <a href="#" class="dropdown-item">👁️ Visualizar</a>
+                            <a href="#" class="dropdown-item">✏️ Editar</a>
+                            <a href="#" class="dropdown-item">🔒 Suspender</a>
+                            <a href="#" class="dropdown-item danger">🗑️ Excluir</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-meta">
+                    <div class="meta-item">
+                        <span class="meta-value">3</span>
+                        <span class="meta-label">Cursos</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-value">15/01</span>
+                        <span class="meta-label">Último acesso</span>
+                    </div>
+                </div>
+                <div class="user-status status-active">
+                    <span>●</span> Ativo
+                </div>
+            </div>
+
+            <!-- Usuário 2 -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-photo">MS</div>
+                        <div class="user-details">
+                            <h3>Maria Santos</h3>
+                            <p>maria@email.com</p>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="settings-btn" onclick="toggleDropdown(this)">⚙️</button>
+                        <div class="actions-dropdown">
+                            <a href="#" class="dropdown-item">👁️ Visualizar</a>
+                            <a href="#" class="dropdown-item">✏️ Editar</a>
+                            <a href="#" class="dropdown-item">🔒 Suspender</a>
+                            <a href="#" class="dropdown-item danger">🗑️ Excluir</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-meta">
+                    <div class="meta-item">
+                        <span class="meta-value">7</span>
+                        <span class="meta-label">Cursos</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-value">14/01</span>
+                        <span class="meta-label">Último acesso</span>
+                    </div>
+                </div>
+                <div class="user-status status-active">
+                    <span>●</span> Ativo
+                </div>
+            </div>
+
+            <!-- Usuário 3 -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-photo">PO</div>
+                        <div class="user-details">
+                            <h3>Pedro Oliveira</h3>
+                            <p>pedro@email.com</p>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="settings-btn" onclick="toggleDropdown(this)">⚙️</button>
+                        <div class="actions-dropdown">
+                            <a href="#" class="dropdown-item">👁️ Visualizar</a>
+                            <a href="#" class="dropdown-item">✏️ Editar</a>
+                            <a href="#" class="dropdown-item">🔓 Reativar</a>
+                            <a href="#" class="dropdown-item danger">🗑️ Excluir</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-meta">
+                    <div class="meta-item">
+                        <span class="meta-value">1</span>
+                        <span class="meta-label">Cursos</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-value">10/01</span>
+                        <span class="meta-label">Último acesso</span>
+                    </div>
+                </div>
+                <div class="user-status status-inactive">
+                    <span>●</span> Inativo
+                </div>
+            </div>
+
+            <!-- Usuário 4 -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-photo">AC</div>
+                        <div class="user-details">
+                            <h3>Ana Costa</h3>
+                            <p>ana@email.com</p>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="settings-btn" onclick="toggleDropdown(this)">⚙️</button>
+                        <div class="actions-dropdown">
+                            <a href="#" class="dropdown-item">👁️ Visualizar</a>
+                            <a href="#" class="dropdown-item">✏️ Editar</a>
+                            <a href="#" class="dropdown-item">🔒 Suspender</a>
+                            <a href="#" class="dropdown-item danger">🗑️ Excluir</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-meta">
+                    <div class="meta-item">
+                        <span class="meta-value">5</span>
+                        <span class="meta-label">Cursos</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-value">16/01</span>
+                        <span class="meta-label">Último acesso</span>
+                    </div>
+                </div>
+                <div class="user-status status-active">
+                    <span>●</span> Ativo
+                </div>
+            </div>
+
+            <!-- Usuário 5 -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-photo">CF</div>
+                        <div class="user-details">
+                            <h3>Carlos Ferreira</h3>
+                            <p>carlos@email.com</p>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="settings-btn" onclick="toggleDropdown(this)">⚙️</button>
+                        <div class="actions-dropdown">
+                            <a href="#" class="dropdown-item">👁️ Visualizar</a>
+                            <a href="#" class="dropdown-item">✏️ Editar</a>
+                            <a href="#" class="dropdown-item">🔒 Suspender</a>
+                            <a href="#" class="dropdown-item danger">🗑️ Excluir</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-meta">
+                    <div class="meta-item">
+                        <span class="meta-value">2</span>
+                        <span class="meta-label">Cursos</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-value">13/01</span>
+                        <span class="meta-label">Último acesso</span>
+                    </div>
+                </div>
+                <div class="user-status status-active">
+                    <span>●</span> Ativo
+                </div>
+            </div>
+
+            <!-- Usuário 6 -->
+            <div class="user-card">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-photo">LM</div>
+                        <div class="user-details">
+                            <h3>Lucia Martins</h3>
+                            <p>lucia@email.com</p>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="settings-btn" onclick="toggleDropdown(this)">⚙️</button>
+                        <div class="actions-dropdown">
+                            <a href="#" class="dropdown-item">👁️ Visualizar</a>
+                            <a href="#" class="dropdown-item">✏️ Editar</a>
+                            <a href="#" class="dropdown-item">🔒 Suspender</a>
+                            <a href="#" class="dropdown-item danger">🗑️ Excluir</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-meta">
+                    <div class="meta-item">
+                        <span class="meta-value">4</span>
+                        <span class="meta-label">Cursos</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-value">12/01</span>
+                        <span class="meta-label">Último acesso</span>
+                    </div>
+                </div>
+                <div class="user-status status-active">
+                    <span>●</span> Ativo
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Toggle dropdown
+        function toggleDropdown(button) {
+            const dropdown = button.nextElementSibling;
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.actions-dropdown').forEach(d => {
+                if (d !== dropdown) {
+                    d.classList.remove('active');
+                }
+            });
+            
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-actions')) {
+                document.querySelectorAll('.actions-dropdown').forEach(d => {
+                    d.classList.remove('active');
+                });
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const userCards = document.querySelectorAll('.user-card');
+            
+            userCards.forEach(card => {
+                const userName = card.querySelector('.user-details h3').textContent.toLowerCase();
+                const userEmail = card.querySelector('.user-details p').textContent.toLowerCase();
+                
+                if (userName.includes(searchTerm) || userEmail.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Add user button
+        document.querySelector('.add-user-btn').addEventListener('click', function() {
+            alert('Funcionalidade de adicionar usuário seria implementada aqui');
+        });
+    </script>
+</body>
+</html>
+

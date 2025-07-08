@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Detalhes do Curso</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--primary-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 3px solid var(--bg-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 200px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-fast);
+            z-index: var(--z-dropdown);
+            margin-top: var(--spacing-sm);
+        }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background-color var(--transition-fast);
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger-color);
+        }
+
+        .dropdown-item.danger:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        .main-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-xxl);
+        }
+
+        .course-main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .course-video {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--border-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: var(--font-size-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform var(--transition-slow);
+        }
+
+        .course-video:hover .video-container::before {
+            transform: translateX(100%);
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: var(--font-size-2xl);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .play-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .course-info {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .course-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.3;
+        }
+
+        .course-author {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .course-description {
+            background: rgba(108, 117, 125, 0.05);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .description-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .description-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: var(--font-size-base);
+        }
+
+        .course-details {
+            background: rgba(108, 117, 125, 0.05);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+        }
+
+        .details-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: var(--spacing-sm);
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+        }
+
+        .detail-value {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .detail-label {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .course-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .purchase-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: calc(var(--spacing-xl) + 80px);
+        }
+
+        .course-price {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .purchase-btn {
+            width: 100%;
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            padding: var(--spacing-lg);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .purchase-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left var(--transition-slow);
+        }
+
+        .purchase-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .purchase-btn:hover::before {
+            left: 100%;
+        }
+
+        .course-features {
+            list-style: none;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            gap: var(--spacing-sm);
+        }
+
+        .feature-icon {
+            color: var(--accent-color);
+            font-size: var(--font-size-base);
+        }
+
+        .guarantee-text {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: var(--font-size-xs);
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+                padding: var(--spacing-lg);
+            }
+            
+            .purchase-card {
+                position: static;
+                order: -1;
+            }
+            
+            .video-container {
+                height: 250px;
+            }
+            
+            .course-title {
+                font-size: var(--font-size-xl);
+            }
+            
+            .course-price {
+                font-size: var(--font-size-2xl);
+            }
+        }
+
+        /* Animações */
+        .course-main,
+        .course-sidebar {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .course-sidebar {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <div class="logo">EDUSTREAM</div>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" onclick="toggleUserMenu()">U</div>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="perfil.html" class="dropdown-item">👤 Meu Perfil</a>
+                    <a href="meus-cursos.html" class="dropdown-item">📚 Meus Cursos</a>
+                    <a href="certificados.html" class="dropdown-item">🏆 Certificados</a>
+                    <a href="configuracoes-usuario.html" class="dropdown-item">⚙️ Configurações</a>
+                    <a href="#" class="dropdown-item" onclick="logout()">🚪 Sair</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Course Main Content -->
+        <div class="course-main">
+            <!-- Video Player -->
+            <div class="course-video">
+                <div class="video-container" id="videoContainer">
+                    🎥 Player de Vídeo
+                    <div class="play-button" onclick="playVideo()">▶</div>
+                </div>
+            </div>
+
+            <!-- Course Information -->
+            <div class="course-info">
+                <h1 class="course-title" id="courseTitle">Aprenda como fazer full clear 3:10 de Gragas(granada)</h1>
+                <p class="course-author">Autor do curso: <strong id="courseAuthor">Bonifas</strong></p>
+                
+                <div class="course-description">
+                    <h3 class="description-title">Resumo do conteúdo do curso</h3>
+                    <p class="description-text" id="courseDescription">
+                        Neste curso completo, você aprenderá todas as técnicas avançadas para dominar o Gragas no League of Legends. 
+                        Desde o clear básico da jungle até estratégias avançadas de teamfight, este curso cobrirá tudo que você precisa 
+                        para se tornar um expert com este campeão. Aprenda combos, builds, rotas de jungle e muito mais!
+                    </p>
+                </div>
+
+                <div class="course-details">
+                    <h3 class="details-title">Informações detalhadas de cada curso</h3>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-value" id="courseDuration">8h 30min</span>
+                            <span class="detail-label">Duração Total</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-value" id="courseModules">6</span>
+                            <span class="detail-label">Módulos</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-value" id="courseLessons">24</span>
+                            <span class="detail-label">Aulas</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-value" id="courseLevel">Intermediário</span>
+                            <span class="detail-label">Nível</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-value" id="courseLanguage">Português</span>
+                            <span class="detail-label">Idioma</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-value" id="courseCertificate">Sim</span>
+                            <span class="detail-label">Certificado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Sidebar -->
+        <div class="course-sidebar">
+            <div class="purchase-card">
+                <div class="course-price" id="coursePrice">R$250,00</div>
+                
+                <button class="purchase-btn" onclick="purchaseCourse()">
+                    Adquirir curso
+                </button>
+                
+                <ul class="course-features">
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Acesso vitalício ao curso
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Certificado de conclusão
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Suporte direto com o instrutor
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Acesso em dispositivos móveis
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Material complementar para download
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        Atualizações gratuitas do conteúdo
+                    </li>
+                </ul>
+                
+                <p class="guarantee-text">
+                    💰 Garantia de 30 dias<br>
+                    Se não ficar satisfeito, devolvemos seu dinheiro
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Get course data from URL parameters
+        function getCourseDataFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                title: urlParams.get('title') || 'Aprenda como fazer full clear 3:10 de Gragas(granada)',
+                author: urlParams.get('author') || 'Bonifas',
+                price: urlParams.get('price') || 'R$250,00',
+                description: urlParams.get('description') || 'Neste curso completo, você aprenderá todas as técnicas avançadas para dominar o Gragas no League of Legends.',
+                duration: urlParams.get('duration') || '8h 30min',
+                modules: urlParams.get('modules') || '6',
+                lessons: urlParams.get('lessons') || '24',
+                level: urlParams.get('level') || 'Intermediário'
+            };
+        }
+
+        // Load course data
+        function loadCourseData() {
+            const courseData = getCourseDataFromURL();
+            
+            document.getElementById('courseTitle').textContent = courseData.title;
+            document.getElementById('courseAuthor').textContent = courseData.author;
+            document.getElementById('coursePrice').textContent = courseData.price;
+            document.getElementById('courseDescription').textContent = courseData.description;
+            document.getElementById('courseDuration').textContent = courseData.duration;
+            document.getElementById('courseModules').textContent = courseData.modules;
+            document.getElementById('courseLessons').textContent = courseData.lessons;
+            document.getElementById('courseLevel').textContent = courseData.level;
+        }
+
+        // User menu toggle
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-menu')) {
+                document.getElementById('userDropdown').classList.remove('active');
+            }
+        });
+
+        // Go back function
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // Play video function
+        function playVideo() {
+            const videoContainer = document.getElementById('videoContainer');
+            videoContainer.innerHTML = `
+                <video controls autoplay style="width: 100%; height: 100%; object-fit: cover;">
+                    <source src="#" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+            `;
+        }
+
+        // Purchase course function
+        function purchaseCourse() {
+            const courseTitle = document.getElementById('courseTitle').textContent;
+            const coursePrice = document.getElementById('coursePrice').textContent;
+            
+            if (confirm(`Deseja adquirir o curso "${courseTitle}" por ${coursePrice}?`)) {
+                // Simulate purchase process
+                const purchaseBtn = document.querySelector('.purchase-btn');
+                const originalText = purchaseBtn.textContent;
+                
+                purchaseBtn.textContent = 'Processando...';
+                purchaseBtn.disabled = true;
+                
+                setTimeout(() => {
+                    alert('Compra realizada com sucesso! Você já pode acessar o curso.');
+                    purchaseBtn.textContent = 'Acessar Curso';
+                    purchaseBtn.onclick = function() {
+                        window.location.href = 'assistir-curso.html?title=' + encodeURIComponent(courseTitle);
+                    };
+                }, 2000);
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('userLoggedIn');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Load course data when page loads
+        document.addEventListener('DOMContentLoaded', loadCourseData);
+    </script>
+</body>
+</html>
+

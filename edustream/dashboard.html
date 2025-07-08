@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Dashboard</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: var(--font-size-xl);
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            transition: all var(--transition-fast);
+        }
+
+        .menu-toggle:hover {
+            background-color: var(--bg-secondary);
+            transform: scale(1.1);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-size: var(--font-size-base);
+            transition: all var(--transition-normal);
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 3px solid var(--bg-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow);
+        }
+
+        .main-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .course-section {
+            margin-bottom: var(--spacing-xxl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .view-all-btn {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: all var(--transition-fast);
+            position: relative;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+        }
+
+        .view-all-btn:hover {
+            background-color: var(--bg-secondary);
+            transform: translateX(5px);
+        }
+
+        .view-all-btn::after {
+            content: '→';
+            margin-left: var(--spacing-xs);
+            transition: transform var(--transition-fast);
+        }
+
+        .view-all-btn:hover::after {
+            transform: translateX(3px);
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .course-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--info-color));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .course-card:hover::before {
+            opacity: 1;
+        }
+
+        .course-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--border-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: var(--font-size-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform var(--transition-slow);
+        }
+
+        .course-card:hover .course-image::before {
+            transform: translateX(100%);
+        }
+
+        .course-content {
+            padding: var(--spacing-lg);
+        }
+
+        .course-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.3;
+        }
+
+        .course-description {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            line-height: 1.5;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--font-size-xs);
+            color: var(--text-muted);
+        }
+
+        .course-price {
+            font-weight: var(--font-weight-bold);
+            color: var(--accent-color);
+            font-size: var(--font-size-base);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--secondary-color) 100%);
+            color: var(--text-light);
+            transition: left var(--transition-normal);
+            z-index: var(--z-fixed);
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .filter-section {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .filter-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: var(--font-size-sm);
+        }
+
+        .filter-select option {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .range-slider {
+            width: 100%;
+            margin: var(--spacing-sm) 0;
+        }
+
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-xs);
+            color: var(--text-muted);
+        }
+
+        /* User dropdown menu */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: var(--spacing-sm);
+            min-width: 250px;
+            background: linear-gradient(145deg, var(--bg-light), #ffffff);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-normal);
+            border: 1px solid var(--border-color);
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-info {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .user-name {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .user-email {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .dropdown-menu-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md) var(--spacing-lg);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            gap: var(--spacing-sm);
+        }
+
+        .dropdown-menu-item:hover {
+            background-color: var(--bg-secondary);
+            transform: translateX(5px);
+        }
+
+        .dropdown-menu-item:last-child {
+            border-top: 1px solid var(--border-color);
+            color: var(--danger-color);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                gap: var(--spacing-sm);
+            }
+            
+            .search-container {
+                max-width: none;
+            }
+            
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+        }
+
+        /* Animações de entrada */
+        .course-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .course-card:nth-child(1) { animation-delay: 0.1s; }
+        .course-card:nth-child(2) { animation-delay: 0.2s; }
+        .course-card:nth-child(3) { animation-delay: 0.3s; }
+        .course-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Já tem algum curso em mente? Procure aqui!">
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-info">
+                        <div class="user-name">Username</div>
+                        <div class="user-email">user@email.com</div>
+                    </div>
+                    <a href="perfil.html" class="dropdown-menu-item">👤 Perfil</a>
+                    <a href="meus-cursos.html" class="dropdown-menu-item">📚 Seus cursos</a>
+                    <a href="certificados.html" class="dropdown-menu-item">🏆 Certificados</a>
+                    <a href="pagamentos.html" class="dropdown-menu-item">💳 Pagamentos</a>
+                    <a href="configuracoes-usuario.html" class="dropdown-menu-item">⚙️ Configurações</a>
+                    <a href="#" class="dropdown-menu-item" onclick="logout()">🚪 Sair</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">EDUSTREAM</div>
+            <p>Filtros de Busca</p>
+        </div>
+        
+        <div class="filter-section">
+            <div class="filter-group">
+                <label class="filter-label">Categoria</label>
+                <select class="filter-select" onchange="applyFilters()">
+                    <option value="">Todas as categorias</option>
+                    <option value="programacao">Programação</option>
+                    <option value="design">Design</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="negocios">Negócios</option>
+                    <option value="idiomas">Idiomas</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Dificuldade</label>
+                <select class="filter-select" onchange="applyFilters()">
+                    <option value="">Todas as dificuldades</option>
+                    <option value="iniciante">Iniciante</option>
+                    <option value="intermediario">Intermediário</option>
+                    <option value="avancado">Avançado</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Preço</label>
+                <select class="filter-select" onchange="applyFilters()">
+                    <option value="">Todos os preços</option>
+                    <option value="gratuito">Gratuito</option>
+                    <option value="pago">Pago</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Faixa de Valor</label>
+                <input type="range" class="range-slider" min="0" max="500" value="250" onchange="updateRangeValue(this, 'priceValue')">
+                <div class="range-values">
+                    <span>R$ 0</span>
+                    <span id="priceValue">R$ 250</span>
+                    <span>R$ 500</span>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Número de Aulas</label>
+                <input type="range" class="range-slider" min="1" max="100" value="50" onchange="updateRangeValue(this, 'lessonsValue')">
+                <div class="range-values">
+                    <span>1 aula</span>
+                    <span id="lessonsValue">50 aulas</span>
+                    <span>100 aulas</span>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Número de Módulos</label>
+                <input type="range" class="range-slider" min="1" max="20" value="10" onchange="updateRangeValue(this, 'modulesValue')">
+                <div class="range-values">
+                    <span>1 módulo</span>
+                    <span id="modulesValue">10 módulos</span>
+                    <span>20 módulos</span>
+                </div>
+            </div>
+            
+            <button class="filter-clear-btn" onclick="clearFilters()">Limpar Filtros</button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Cursos tipo 1 -->
+        <section class="course-section">
+            <div class="section-header">
+                <h2 class="section-title">Cursos tipo 1</h2>
+                <a href="cursos.html" class="view-all-btn">Ver todos...</a>
+            </div>
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-image">📱 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">HTML e CSS Básico</h3>
+                        <p class="course-description">Aprenda os fundamentos do desenvolvimento web com HTML e CSS</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.8 (120 avaliações)</span>
+                            <span class="course-price">R$ 99,90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">💻 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">JavaScript Avançado</h3>
+                        <p class="course-description">Domine JavaScript moderno e suas principais funcionalidades</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.9 (89 avaliações)</span>
+                            <span class="course-price">R$ 199,90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">🎨 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Design UI/UX</h3>
+                        <p class="course-description">Princípios de design de interface e experiência do usuário</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.7 (156 avaliações)</span>
+                            <span class="course-price">R$ 149,90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">📈 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Marketing Digital</h3>
+                        <p class="course-description">Estratégias completas de marketing digital</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.6 (203 avaliações)</span>
+                            <span class="course-price">R$ 129,90</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cursos tipo 2 -->
+        <section class="course-section">
+            <div class="section-header">
+                <h2 class="section-title">Cursos tipo 2</h2>
+                <a href="cursos.html" class="view-all-btn">Ver todos...</a>
+            </div>
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-image">🐍 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Python para Iniciantes</h3>
+                        <p class="course-description">Programação em Python do zero</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.8 (95 avaliações)</span>
+                            <span class="course-price">R$ 119,90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">🎭 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Photoshop Avançado</h3>
+                        <p class="course-description">Técnicas avançadas de edição de imagens</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.9 (67 avaliações)</span>
+                            <span class="course-price">R$ 179,90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">📊 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Excel Avançado</h3>
+                        <p class="course-description">Domine planilhas e análise de dados</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.7 (134 avaliações)</span>
+                            <span class="course-price">R$ 89,90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">🌐 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">WordPress Completo</h3>
+                        <p class="course-description">Crie sites profissionais com WordPress</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.5 (78 avaliações)</span>
+                            <span class="course-price">R$ 159,90</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cursos tipo 3 -->
+        <section class="course-section">
+            <div class="section-header">
+                <h2 class="section-title">Cursos tipo 3</h2>
+                <a href="cursos.html" class="view-all-btn">Ver todos...</a>
+            </div>
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-image">📱 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">React Native</h3>
+                        <p class="course-description">Desenvolvimento de apps mobile</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.8 (45 avaliações)</span>
+                            <span class="course-price">R$ 249,90</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">🔒 Imagem do Curso</div>
+                    <div class="course-content">
+                        <h3 class="course-title">Segurança Digital</h3>
+                        <p class="course-description">Proteja seus dados e sistemas</p>
+                        <div class="course-meta">
+                            <span>⭐ 4.9 (23 avaliações)</span>
+                            <span class="course-price">R$ 199,90</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Toggle sidebar
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Toggle user dropdown
+        const userAvatar = document.getElementById('userAvatar');
+        const userDropdown = document.getElementById('userDropdown');
+
+        userAvatar.addEventListener('click', function() {
+            userDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('userLoggedIn');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Filter functions
+        function applyFilters() {
+            console.log('Aplicando filtros...');
+            // Aqui você implementaria a lógica de filtros
+        }
+
+        function updateRangeValue(slider, targetId) {
+            const value = slider.value;
+            const target = document.getElementById(targetId);
+            
+            if (targetId === 'priceValue') {
+                target.textContent = `R$ ${value}`;
+            } else if (targetId === 'lessonsValue') {
+                target.textContent = `${value} aulas`;
+            } else if (targetId === 'modulesValue') {
+                target.textContent = `${value} módulos`;
+            }
+        }
+
+        function clearFilters() {
+            // Reset all selects
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.selectedIndex = 0;
+            });
+            
+            // Reset all range sliders
+            document.querySelectorAll('.range-slider').forEach(slider => {
+                slider.value = slider.getAttribute('value');
+                const event = new Event('change');
+                slider.dispatchEvent(event);
+            });
+            
+            console.log('Filtros limpos');
+        }
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            // Aqui você implementaria a lógica de busca
+            console.log('Buscando por:', searchTerm);
+        });
+
+        // Course card click
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const courseTitle = this.querySelector('.course-title').textContent;
+                const coursePrice = this.querySelector('.course-price').textContent;
+                const courseDescription = this.querySelector('.course-description').textContent;
+                
+                // Redirect to course details page with parameters
+                const params = new URLSearchParams({
+                    title: courseTitle,
+                    price: coursePrice,
+                    description: courseDescription
+                });
+                
+                window.location.href = `curso-detalhes.html?${params.toString()}`;
+            });
+        });
+    </script>
+</body>
+</html>
+

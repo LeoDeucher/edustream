@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Meus Cursos</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--primary-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .courses-tabs {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .tab-btn {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .tab-btn.active,
+        .tab-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .course-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--border-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: var(--font-size-lg);
+            position: relative;
+        }
+
+        .course-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-light);
+        }
+
+        .badge-completed {
+            background: var(--accent-color);
+        }
+
+        .badge-in-progress {
+            background: var(--info-color);
+        }
+
+        .badge-not-started {
+            background: var(--warning-color);
+        }
+
+        .course-content {
+            padding: var(--spacing-lg);
+        }
+
+        .course-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.3;
+        }
+
+        .course-author {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-section {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-sm);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--info-color));
+            border-radius: 4px;
+            transition: width var(--transition-slow);
+        }
+
+        .course-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-continue {
+            flex: 1;
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-certificate {
+            background: var(--warning-color);
+            color: var(--text-light);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-certificate:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xxl);
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .empty-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-text {
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.6;
+        }
+
+        .btn-browse {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-browse:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .courses-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+        }
+
+        /* Animações */
+        .course-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .course-card:nth-child(1) { animation-delay: 0.1s; }
+        .course-card:nth-child(2) { animation-delay: 0.2s; }
+        .course-card:nth-child(3) { animation-delay: 0.3s; }
+        .course-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+                <div class="logo">EDUSTREAM</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Meus Cursos</h1>
+        
+        <div class="courses-tabs">
+            <button class="tab-btn active" onclick="showTab('all')">Todos</button>
+            <button class="tab-btn" onclick="showTab('in-progress')">Em Andamento</button>
+            <button class="tab-btn" onclick="showTab('completed')">Concluídos</button>
+            <button class="tab-btn" onclick="showTab('not-started')">Não Iniciados</button>
+        </div>
+
+        <div class="courses-grid" id="coursesGrid">
+            <!-- Curso 1 - Concluído -->
+            <div class="course-card" data-status="completed">
+                <div class="course-image">
+                    💻 HTML & CSS
+                    <div class="course-badge badge-completed">Concluído</div>
+                </div>
+                <div class="course-content">
+                    <h3 class="course-title">HTML e CSS Básico</h3>
+                    <p class="course-author">Prof. João Developer</p>
+                    
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span>Progresso</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <button class="btn-continue" onclick="reviewCourse('HTML e CSS Básico')">Revisar</button>
+                        <button class="btn-certificate" onclick="downloadCertificate('HTML e CSS Básico')">📜</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curso 2 - Em Andamento -->
+            <div class="course-card" data-status="in-progress">
+                <div class="course-image">
+                    🚀 JavaScript
+                    <div class="course-badge badge-in-progress">Em Andamento</div>
+                </div>
+                <div class="course-content">
+                    <h3 class="course-title">JavaScript Avançado</h3>
+                    <p class="course-author">Prof. Maria JS</p>
+                    
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span>Progresso</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <button class="btn-continue" onclick="continueCourse('JavaScript Avançado')">Continuar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curso 3 - Em Andamento -->
+            <div class="course-card" data-status="in-progress">
+                <div class="course-image">
+                    🎨 Design UI/UX
+                    <div class="course-badge badge-in-progress">Em Andamento</div>
+                </div>
+                <div class="course-content">
+                    <h3 class="course-title">Design UI/UX</h3>
+                    <p class="course-author">Prof. Ana Designer</p>
+                    
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span>Progresso</span>
+                            <span>30%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 30%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <button class="btn-continue" onclick="continueCourse('Design UI/UX')">Continuar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curso 4 - Não Iniciado -->
+            <div class="course-card" data-status="not-started">
+                <div class="course-image">
+                    📈 Marketing Digital
+                    <div class="course-badge badge-not-started">Não Iniciado</div>
+                </div>
+                <div class="course-content">
+                    <h3 class="course-title">Marketing Digital</h3>
+                    <p class="course-author">Prof. Carlos Marketing</p>
+                    
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span>Progresso</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <button class="btn-continue" onclick="startCourse('Marketing Digital')">Iniciar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Curso 5 - Concluído -->
+            <div class="course-card" data-status="completed">
+                <div class="course-image">
+                    🐍 Python
+                    <div class="course-badge badge-completed">Concluído</div>
+                </div>
+                <div class="course-content">
+                    <h3 class="course-title">Python para Iniciantes</h3>
+                    <p class="course-author">Prof. Pedro Python</p>
+                    
+                    <div class="progress-section">
+                        <div class="progress-label">
+                            <span>Progresso</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <button class="btn-continue" onclick="reviewCourse('Python para Iniciantes')">Revisar</button>
+                        <button class="btn-certificate" onclick="downloadCertificate('Python para Iniciantes')">📜</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">📚</div>
+            <h2 class="empty-title">Nenhum curso encontrado</h2>
+            <p class="empty-text">Você ainda não possui cursos nesta categoria.</p>
+            <a href="cursos.html" class="btn-browse">Explorar Cursos</a>
+        </div>
+    </main>
+
+    <script>
+        // Show tab function
+        function showTab(status) {
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const courseCards = document.querySelectorAll('.course-card');
+            const emptyState = document.getElementById('emptyState');
+            let visibleCount = 0;
+            
+            courseCards.forEach(card => {
+                if (status === 'all' || card.dataset.status === status) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show empty state if no courses
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Continue course function
+        function continueCourse(courseTitle) {
+            alert(`Continuando o curso: ${courseTitle}`);
+            // Redirect to course player
+            window.location.href = `assistir-curso.html?title=${encodeURIComponent(courseTitle)}`;
+        }
+
+        // Start course function
+        function startCourse(courseTitle) {
+            if (confirm(`Deseja iniciar o curso "${courseTitle}"?`)) {
+                alert(`Iniciando o curso: ${courseTitle}`);
+                window.location.href = `assistir-curso.html?title=${encodeURIComponent(courseTitle)}`;
+            }
+        }
+
+        // Review course function
+        function reviewCourse(courseTitle) {
+            alert(`Revisando o curso: ${courseTitle}`);
+            window.location.href = `assistir-curso.html?title=${encodeURIComponent(courseTitle)}&review=true`;
+        }
+
+        // Download certificate function
+        function downloadCertificate(courseTitle) {
+            alert(`Baixando certificado do curso: ${courseTitle}`);
+            // Simulate certificate download
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = `certificado-${courseTitle.toLowerCase().replace(/\s+/g, '-')}.pdf`;
+            link.click();
+        }
+
+        // Course card click
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't trigger if clicking on buttons
+                if (e.target.tagName === 'BUTTON') return;
+                
+                const courseTitle = this.querySelector('.course-title').textContent;
+                const status = this.dataset.status;
+                
+                if (status === 'not-started') {
+                    startCourse(courseTitle);
+                } else if (status === 'in-progress') {
+                    continueCourse(courseTitle);
+                } else if (status === 'completed') {
+                    reviewCourse(courseTitle);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

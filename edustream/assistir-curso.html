@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Assistir Curso</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--primary-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: var(--spacing-xxl);
+        }
+
+        .video-player-section {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .video-container {
+            width: 100%;
+            height: 500px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: var(--font-size-2xl);
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-info {
+            padding: var(--spacing-xl);
+        }
+
+        .video-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .course-progress {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-sm);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--info-color));
+            border-radius: 5px;
+            transition: width var(--transition-slow);
+        }
+
+        .course-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .course-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-color), var(--info-color));
+            color: var(--text-light);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .sidebar {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: calc(var(--spacing-xl) + 80px);
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .module-list {
+            list-style: none;
+        }
+
+        .module-item {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .module-header:hover {
+            color: var(--primary-color);
+        }
+
+        .lesson-list {
+            list-style: none;
+            margin-top: var(--spacing-sm);
+            padding-left: var(--spacing-lg);
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .lesson-item:hover {
+            color: var(--primary-color);
+        }
+
+        .lesson-item.completed {
+            color: var(--accent-color);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .lesson-item.active {
+            color: var(--info-color);
+            font-weight: var(--font-weight-bold);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: var(--spacing-lg);
+            }
+            
+            .video-container {
+                height: 300px;
+            }
+            
+            .sidebar {
+                position: static;
+                margin-top: var(--spacing-xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href=\'dashboard.html\'">←</button>
+                <div class="logo">EDUSTREAM</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Video Player Section -->
+        <div class="video-player-section">
+            <div class="video-container" id="videoPlayer">
+                <video controls autoplay>
+                    <source src="#" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+            </div>
+            <div class="video-info">
+                <h1 class="video-title" id="currentLessonTitle">Introdução ao Curso de HTML e CSS</h1>
+                <div class="course-progress">
+                    <div class="progress-label">
+                        <span>Progresso do Curso</span>
+                        <span id="courseProgressText">25% Concluído</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 25%;" id="courseProgressBar"></div>
+                    </div>
+                </div>
+                <p class="course-description" id="currentLessonDescription">
+                    Nesta aula introdutória, você terá uma visão geral do que será abordado no curso de HTML e CSS, 
+                    entendendo a importância dessas tecnologias para o desenvolvimento web e como elas se complementam.
+                </p>
+                <div class="course-actions">
+                    <button class="btn-primary" onclick="markLessonCompleted()">Marcar como Concluída</button>
+                    <button class="btn-secondary" onclick="nextLesson()">Próxima Aula →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Course Content -->
+        <div class="sidebar">
+            <h2 class="sidebar-title">Conteúdo do Curso</h2>
+            <ul class="module-list">
+                <li class="module-item">
+                    <div class="module-header" onclick="toggleModule(this)">Módulo 1: Fundamentos de HTML</div>
+                    <ul class="lesson-list">
+                        <li class="lesson-item active" data-lesson-id="1" onclick="loadLesson(1, 'Introdução ao Curso de HTML e CSS', 'Nesta aula introdutória, você terá uma visão geral do que será abordado no curso de HTML e CSS, entendendo a importância dessas tecnologias para o desenvolvimento web e como elas se complementam.')">▶ Aula 1: Introdução</li>
+                        <li class="lesson-item" data-lesson-id="2" onclick="loadLesson(2, 'Estrutura Básica de um Documento HTML', 'Aprenda a estrutura fundamental de um documento HTML, incluindo tags essenciais como <html>, <head> e <body>.')">▶ Aula 2: Estrutura HTML</li>
+                        <li class="lesson-item" data-lesson-id="3" onclick="loadLesson(3, 'Elementos de Texto e Semântica', 'Explore os elementos de texto mais comuns em HTML e a importância da semântica para acessibilidade e SEO.')">▶ Aula 3: Elementos de Texto</li>
+                    </ul>
+                </li>
+                <li class="module-item">
+                    <div class="module-header" onclick="toggleModule(this)">Módulo 2: Estilizando com CSS</div>
+                    <ul class="lesson-list">
+                        <li class="lesson-item" data-lesson-id="4" onclick="loadLesson(4, 'Introdução ao CSS e Seletores', 'Entenda o que é CSS, como ele funciona e os diferentes tipos de seletores para estilizar elementos HTML.')">▶ Aula 4: Introdução ao CSS</li>
+                        <li class="lesson-item" data-lesson-id="5" onclick="loadLesson(5, 'Modelo de Caixa e Propriedades de Layout', 'Aprenda sobre o modelo de caixa do CSS (margin, border, padding, content) e como ele afeta o layout dos elementos.')">▶ Aula 5: Modelo de Caixa</li>
+                        <li class="lesson-item" data-lesson-id="6" onclick="loadLesson(6, 'Flexbox e Grid para Layouts Responsivos', 'Domine as técnicas de Flexbox e CSS Grid para criar layouts complexos e responsivos.')">▶ Aula 6: Flexbox e Grid</li>
+                    </ul>
+                </li>
+                <li class="module-item">
+                    <div class="module-header" onclick="toggleModule(this)">Módulo 3: Interatividade com JavaScript</div>
+                    <ul class="lesson-list">
+                        <li class="lesson-item" data-lesson-id="7" onclick="loadLesson(7, 'Fundamentos de JavaScript', 'Conheça os conceitos básicos de JavaScript, incluindo variáveis, tipos de dados e operadores.')">▶ Aula 7: Fundamentos JS</li>
+                        <li class="lesson-item" data-lesson-id="8" onclick="loadLesson(8, 'Manipulação do DOM', 'Aprenda a interagir com elementos HTML usando JavaScript para criar páginas dinâmicas.')">▶ Aula 8: Manipulação DOM</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        let currentLessonId = 1;
+        const totalLessons = 8; // Total number of lessons in the course
+
+        // Load lesson content
+        function loadLesson(lessonId, title, description) {
+            currentLessonId = lessonId;
+            document.getElementById("currentLessonTitle").textContent = title;
+            document.getElementById("currentLessonDescription").textContent = description;
+            
+            // Simulate video change (in a real app, this would load a new video source)
+            const videoPlayer = document.querySelector("#videoPlayer video");
+            videoPlayer.src = `#lesson-${lessonId}.mp4`; // Placeholder video source
+            videoPlayer.load();
+            videoPlayer.play();
+
+            // Update active lesson in sidebar
+            document.querySelectorAll(".lesson-item").forEach(item => {
+                item.classList.remove("active");
+            });
+            document.querySelector(`.lesson-item[data-lesson-id="${lessonId}"]`).classList.add("active");
+
+            updateCourseProgress();
+        }
+
+        // Mark lesson as completed
+        function markLessonCompleted() {
+            const activeLesson = document.querySelector(".lesson-item.active");
+            if (activeLesson) {
+                activeLesson.classList.add("completed");
+                alert(`Aula "${activeLesson.textContent.replace("▶ ", "")}" marcada como concluída!`);
+                updateCourseProgress();
+            }
+        }
+
+        // Go to next lesson
+        function nextLesson() {
+            if (currentLessonId < totalLessons) {
+                const nextLessonItem = document.querySelector(`.lesson-item[data-lesson-id="${currentLessonId + 1}"]`);
+                if (nextLessonItem) {
+                    nextLessonItem.click(); // Simulate click to load next lesson
+                }
+            } else {
+                alert("Você concluiu todas as aulas deste curso!");
+            }
+        }
+
+        // Update course progress
+        function updateCourseProgress() {
+            const completedLessons = document.querySelectorAll(".lesson-item.completed").length;
+            const progressPercentage = (completedLessons / totalLessons) * 100;
+            
+            document.getElementById("courseProgressBar").style.width = `${progressPercentage}%`;
+            document.getElementById("courseProgressText").textContent = `${progressPercentage.toFixed(0)}% Concluído`;
+        }
+
+        // Toggle module visibility
+        function toggleModule(header) {
+            const lessonList = header.nextElementSibling;
+            if (lessonList) {
+                lessonList.style.display = lessonList.style.display === "none" ? "block" : "none";
+            }
+        }
+
+        // Initial load
+        document.addEventListener("DOMContentLoaded", function() {
+            // Load first lesson by default
+            loadLesson(1, 'Introdução ao Curso de HTML e CSS', 'Nesta aula introdutória, você terá uma visão geral do que será abordado no curso de HTML e CSS, entendendo a importância dessas tecnologias para o desenvolvimento web e como elas se complementam.');
+        });
+    </script>
+</body>
+</html>
+

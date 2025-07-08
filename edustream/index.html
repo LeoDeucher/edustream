@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Login</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background-color: var(--bg-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-family-primary);
+        }
+
+        .login-container {
+            background-color: var(--primary-color);
+            padding: var(--spacing-xxl);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: var(--max-width-md);
+            text-align: center;
+        }
+
+        .logo {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: var(--spacing-xl);
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            letter-spacing: 2px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        .login-form .form-control {
+            background-color: var(--bg-light);
+            border: none;
+            padding: var(--spacing-lg);
+            font-size: var(--font-size-base);
+            border-radius: var(--border-radius);
+        }
+
+        .login-form .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .login-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            padding: var(--spacing-lg);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .login-btn:hover {
+            background-color: var(--bg-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .signup-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-lg);
+            opacity: 0.8;
+            transition: opacity var(--transition-fast);
+        }
+
+        .signup-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                margin: var(--spacing-lg);
+                padding: var(--spacing-xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            EDUSTREAM
+        </div>
+        
+        <form class="login-form" action="dashboard.html" method="post">
+            <input type="email" class="form-control" placeholder="Email" required>
+            <input type="password" class="form-control" placeholder="Senha" required>
+            <button type="submit" class="login-btn">Realizar login</button>
+        </form>
+        
+        <a href="cadastro.html" class="signup-link">Já possui uma conta?</a>
+    </div>
+
+    <script>        // Simular login para demonstração
+        document.querySelector(".login-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            const email = this.querySelector("input[type=\"email\"]").value;
+            const senha = this.querySelector("input[type=\"password\"]").value;
+            
+            if (email && senha) {
+                // Simular verificação de admin
+                if (email.includes("admin")) {
+                    window.location.href = "admin/dashboard.html";
+                } else {
+                    window.location.href = "dashboard.html";
+                }
+            } else {
+                alert("Por favor, preencha todos os campos.");
+            }
+        });  </script>
+</body>
+</html>
+

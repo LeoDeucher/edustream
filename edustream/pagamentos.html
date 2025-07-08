@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduStream - Meus Pagamentos</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: var(--font-family-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+        }
+
+        .header-content {
+            max-width: var(--max-width-7xl);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .back-btn {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--primary-color);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--font-size-lg);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            max-width: var(--max-width-4xl);
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .payment-section {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xxl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .btn-add {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .payment-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-card::before {
+            content: ">";
+            position: absolute;
+            top: 50%;
+            right: var(--spacing-md);
+            transform: translateY(-50%);
+            font-size: var(--font-size-2xl);
+            color: var(--text-muted);
+            opacity: 0.2;
+        }
+
+        .card-type {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+
+        .card-number {
+            font-family: monospace;
+            font-size: var(--font-size-lg);
+            color: var(--text-primary);
+        }
+
+        .card-expiry {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .btn-edit,
+        .btn-remove {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: var(--font-size-xs);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-edit {
+            background: var(--info-color);
+            color: var(--text-light);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-color);
+        }
+
+        .btn-remove {
+            background: var(--danger-color);
+            color: var(--text-light);
+        }
+
+        .btn-remove:hover {
+            background: #dc3545;
+        }
+
+        .transaction-history {
+            margin-top: var(--spacing-xl);
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .transaction-title {
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+        }
+
+        .transaction-date {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .transaction-amount {
+            font-weight: var(--font-weight-bold);
+            color: var(--accent-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xxl);
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .empty-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-text {
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .payment-methods-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="back-btn" onclick="window.location.href=\'dashboard.html\'">←</button>
+                <div class="logo">EDUSTREAM</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Meus Pagamentos</h1>
+        
+        <div class="payment-section">
+            <div class="section-header">
+                <h2 class="section-title">Formas de Pagamento</h2>
+                <button class="btn-add" onclick="addPaymentMethod()">+ Adicionar Cartão</button>
+            </div>
+            
+            <div class="payment-methods-grid" id="paymentMethodsGrid">
+                <!-- Cartão de Crédito 1 -->
+                <div class="payment-card">
+                    <span class="card-type">💳 Cartão de Crédito</span>
+                    <span class="card-number">**** **** **** 1234</span>
+                    <span class="card-expiry">Validade: 12/25</span>
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="editPaymentMethod(\'1234\')">Editar</button>
+                        <button class="btn-remove" onclick="removePaymentMethod(\'1234\')">Remover</button>
+                    </div>
+                </div>
+
+                <!-- Cartão de Crédito 2 -->
+                <div class="payment-card">
+                    <span class="card-type">💳 Cartão de Crédito</span>
+                    <span class="card-number">**** **** **** 5678</span>
+                    <span class="card-expiry">Validade: 08/26</span>
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="editPaymentMethod(\'5678\')">Editar</button>
+                        <button class="btn-remove" onclick="removePaymentMethod(\'5678\')">Remover</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="empty-state" id="emptyPaymentMethods" style="display: none;">
+                <div class="empty-icon">💳</div>
+                <h2 class="empty-title">Nenhuma forma de pagamento cadastrada</h2>
+                <p class="empty-text">Adicione um cartão para facilitar suas compras de cursos.</p>
+                <button class="btn-add" onclick="addPaymentMethod()">+ Adicionar Cartão</button>
+            </div>
+        </div>
+
+        <div class="payment-section transaction-history">
+            <div class="section-header">
+                <h2 class="section-title">Histórico de Transações</h2>
+            </div>
+            
+            <div id="transactionHistoryList">
+                <!-- Transação 1 -->
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <span class="transaction-title">Compra de Curso: HTML e CSS Básico</span>
+                        <span class="transaction-date">2024-01-15</span>
+                    </div>
+                    <span class="transaction-amount">R$ 99,90</span>
+                </div>
+
+                <!-- Transação 2 -->
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <span class="transaction-title">Compra de Curso: Python para Iniciantes</span>
+                        <span class="transaction-date">2024-03-20</span>
+                    </div>
+                    <span class="transaction-amount">R$ 129,90</span>
+                </div>
+
+                <!-- Transação 3 -->
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <span class="transaction-title">Compra de Curso: Design UI/UX Avançado</span>
+                        <span class="transaction-date">2024-05-10</span>
+                    </div>
+                    <span class="transaction-amount">R$ 149,90</span>
+                </div>
+            </div>
+
+            <div class="empty-state" id="emptyTransactionHistory" style="display: none;">
+                <div class="empty-icon">💸</div>
+                <h2 class="empty-title">Nenhuma transação encontrada</h2>
+                <p class="empty-text">Seu histórico de transações está vazio. Explore nossos cursos!</p>
+                <a href="cursos.html" class="btn-add">Explorar Cursos</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Add payment method
+        function addPaymentMethod() {
+            alert("Funcionalidade 'Adicionar Cartão' em desenvolvimento!");
+            // In a real application, this would open a form or modal
+        }
+
+        // Edit payment method
+        function editPaymentMethod(cardNumber) {
+            alert(`Funcionalidade 'Editar Cartão' para ${cardNumber} em desenvolvimento!`);
+        }
+
+        // Remove payment method
+        function removePaymentMethod(cardNumber) {
+            if (confirm(`Tem certeza que deseja remover o cartão final ${cardNumber}?`)) {
+                alert(`Cartão final ${cardNumber} removido com sucesso!`);
+                // In a real application, this would remove the card from the DOM and backend
+                // For now, just simulate removal
+                const cardToRemove = document.querySelector(`.payment-card .card-number`).textContent.includes(cardNumber) ? 
+                                     document.querySelector(`.payment-card .card-number`).closest(".payment-card") : null;
+                if (cardToRemove) {
+                    cardToRemove.remove();
+                    checkEmptyStates();
+                }
+            }
+        }
+
+        // Check empty states for payment methods and transactions
+        function checkEmptyStates() {
+            const paymentMethodsGrid = document.getElementById("paymentMethodsGrid");
+            const emptyPaymentMethods = document.getElementById("emptyPaymentMethods");
+            if (paymentMethodsGrid.children.length === 0) {
+                paymentMethodsGrid.style.display = "none";
+                emptyPaymentMethods.style.display = "block";
+            } else {
+                paymentMethodsGrid.style.display = "grid";
+                emptyPaymentMethods.style.display = "none";
+            }
+
+            const transactionHistoryList = document.getElementById("transactionHistoryList");
+            const emptyTransactionHistory = document.getElementById("emptyTransactionHistory");
+            if (transactionHistoryList.children.length === 0) {
+                transactionHistoryList.style.display = "none";
+                emptyTransactionHistory.style.display = "block";
+            } else {
+                transactionHistoryList.style.display = "block";
+                emptyTransactionHistory.style.display = "none";
+            }
+        }
+
+        // Initialize page
+        document.addEventListener("DOMContentLoaded", checkEmptyStates);
+    </script>
+</body>
+</html>
+
